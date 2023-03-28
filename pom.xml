@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.mmiholdings.automation.was.deployment</groupId>
+	<artifactId>Application-deployment-was-nd</artifactId>
+	<name>Application-deployment-was-nd</name>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+
+
+	<properties>
+		<artifactVersion>RELEASE</artifactVersion>
+	</properties>
+
+	<dependencies>
+        <dependency>
+            <groupId>com.mmiholdings.automation.was</groupId>
+            <artifactId>SharedServicesWASAutomation</artifactId>
+             <version>${artifactVersion}</version>
+            <type>zip</type>
+        </dependency>
+	</dependencies>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<stripVersion>true</stripVersion>
+							<outputDirectory>${basedir}/../artifact</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+					<execution>
+                    	<id>unpack</id>
+                    	<phase>process-resources</phase>
+                    	<goals>
+                        	<goal>unpack</goal>
+                    	</goals>
+                    	<configuration>
+                        	<artifactItems>
+                            	<artifactItem>
+                                	<groupId>com.mmiholdings.automation.was</groupId>
+                                	<artifactId>SharedServicesWASAutomation</artifactId>
+                                	<version>${artifactVersion}</version>
+                                	<type>zip</type>
+                                	<outputDirectory>${basedir}/../</outputDirectory>
+                            	</artifactItem>
+                        	</artifactItems>
+                    	</configuration>
+                	</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<id>clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${basedir}/../artifact</directory>
+									<directory>${basedir}/../applications</directory>
+									<directory>${basedir}/../sse_config</directory>
+								</fileset>
+							</filesets>
+							<verbose>true</verbose>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
